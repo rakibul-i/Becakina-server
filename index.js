@@ -21,6 +21,11 @@ app.use("/api/products", productRoutes);
 // default error handler
 app.use(errorHandler);
 
+// test route
+app.get("/", (req, res) => {
+  res.send("This is becakina website");
+});
+
 app.listen(port, () => {
   console.log("listening on port " + port);
 });
