@@ -6,11 +6,13 @@ const getAllProducts = async (req, res) => {
   try {
     const page = parseInt(req.query.page);
     const size = parseInt(req.query.size);
+    const category = req.query.category;
 
     const count = await Product.find({}).count();
     let products;
     if (page) {
-      products = await Product.find({})
+      products = await Product.find({ category: category })
+
         .skip(page * size)
         .limit(size);
     } else {
@@ -29,16 +31,17 @@ const getAllProducts = async (req, res) => {
 // search products
 const searchProducts = async (req, res) => {
   try {
-    const name = req.query.name;
-    const products = await Product.find({});
-    const result2 = products.filter((product) =>
-      product.name.toLowerCase().includes(name)
-    );
-    const result1 = products.filter((product) =>
-      product.category.toLowerCase().includes(name)
-    );
+    const name = req.query.name
+      ? {
+          $or: [
+            { name: { $regex: req.query.name, $options: "i" } },
+            { category: { $regex: req.query.name, $options: "i" } },
+          ],
+        }
+      : {};
+    const products = await Product.find(name);
 
-    res.json([...result1, ...result2]);
+    res.json(products);
   } catch (error) {
     res.status(500).json(error.message);
   }
