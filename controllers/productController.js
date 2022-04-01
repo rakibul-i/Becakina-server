@@ -6,17 +6,24 @@ const getAllProducts = async (req, res) => {
   try {
     const page = parseInt(req.query.page);
     const size = parseInt(req.query.size);
-    const category = req.query.category;
 
-    const count = await Product.find({}).count();
+    // search for products
+    const name = req.query.name
+      ? {
+          $or: [
+            { name: { $regex: req.query.name, $options: "i" } },
+            { category: { $regex: req.query.name, $options: "i" } },
+          ],
+        }
+      : {};
+    const count = await Product.find(name).count();
     let products;
     if (page) {
-      products = await Product.find({ category: category })
-
+      products = await Product.find(name)
         .skip(page * size)
         .limit(size);
     } else {
-      products = await Product.find({}).limit(size);
+      products = await Product.find(name).limit(size);
     }
 
     res.json({
