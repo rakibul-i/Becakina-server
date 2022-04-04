@@ -10,6 +10,7 @@ const stripe = require("stripe")(process.env.STRIPE_SECRET);
 const userRoutes = require("./routes/userRoutes");
 const productRoutes = require("./routes/productRoutes");
 const orderRoutes = require("./routes/orderRoute");
+const reviewRoutes = require("./routes/reviewRoute");
 const connectDB = require("./config/db");
 const { errorHandler } = require("./middlewares/errorHandler");
 const { calculateOrderAmount } = require("./utils/calculateOrderAmount");
@@ -24,6 +25,7 @@ app.use(cors());
 app.use("/api/users", userRoutes);
 app.use("/api/products", productRoutes);
 app.use("/api/orders", orderRoutes);
+app.use("/api/reviews", reviewRoutes);
 
 // default error handler
 app.use(errorHandler);
